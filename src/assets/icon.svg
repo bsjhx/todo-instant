@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="451" height="451">
+<circle cx="225" cy="225" r="223" fill="#FFF"/>
+<circle cx="225" cy="225" r="177" fill="none" stroke="#EEE" stroke-width="22"/>
+<g id="v"><g id="u"><g id="t"><g id="s">
+<path d="m225,225 17-149a150,150 0 0,1 37,9z" fill="#015498" stroke="#666"/></g>
+<use xlink:href="#s" transform="rotate(18 225,225)"/></g>
+<use xlink:href="#t" transform="rotate(36 225,225)"/></g>
+<use xlink:href="#u" transform="rotate(72 225,225)"/></g>
+<use xlink:href="#v" transform="rotate(216 225,225)" opacity=".25"/>
+<use xlink:href="#v" transform="rotate(108 225,225)"/>
+</svg>
