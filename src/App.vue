@@ -1,6 +1,5 @@
 <template>
-  <img alt="Vue logo" src="./assets/icon.svg" viewBox="0 0 60 55" width="250" height="250">
-  <start msg="Welcome to Your Vue.js App"/>
+  <start/>
 </template>
 
 <script>

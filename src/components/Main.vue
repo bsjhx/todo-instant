@@ -1,10 +1,10 @@
 <template>
   <div>Instant to do list!</div>
-  <label>
+  <button @click="createTodoList" v-if="todos.length === 0">Create todo list</button>
+  <button @click="reset" v-if="todos.length > 0">Reset</button>
+  <label v-if="todos.length === 0">
     <textarea
-        @paste="onPaste"
         v-model="text"
-        @click="text = ''; todos = []"
     ></textarea>
   </label>
   <br/>
@@ -28,10 +28,13 @@ export default {
     }
   },
   methods: {
-    onPaste(evt) {
-      evt.clipboardData.getData('text')
-          .split(/\r?\n/)
-          .map(s => this.todos.push({isDone: false, title: s}))
+    createTodoList() {
+      this.text.split(/\r?\n/)
+               .map(s => this.todos.push({isDone: false, title: s}))
+    },
+    reset() {
+      this.text = ''
+      this.todos = []
     }
   }
 }
