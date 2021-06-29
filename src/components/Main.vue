@@ -1,6 +1,10 @@
 <template>
   <div>Instant to do list!</div>
-  <button @click="createTodoList" v-if="todos.length === 0">Create todo list</button>
+  <button
+      @click="createTodoList"
+      v-if="todos.length === 0"
+      :disabled="text.length === 0"
+  >Create todo list</button>
   <button @click="reset" v-if="todos.length > 0">Reset</button>
   <label v-if="todos.length === 0">
     <textarea
@@ -31,10 +35,19 @@ export default {
     createTodoList() {
       this.text.split(/\r?\n/)
                .map(s => this.todos.push({isDone: false, title: s}))
+      localStorage.setItem('todos', JSON.stringify(this.todos))
     },
     reset() {
       this.text = ''
+      localStorage.setItem('todos', '')
       this.todos = []
+    }
+  },
+  mounted() {
+    const storedText = localStorage.getItem('todos');
+    if (storedText) {
+      this.text = storedText
+      this.todos = JSON.parse(storedText)
     }
   }
 }
