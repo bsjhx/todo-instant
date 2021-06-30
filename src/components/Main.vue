@@ -1,25 +1,38 @@
 <template>
-  <div>Instant to do list!</div>
-  <button
-      @click="createTodoList"
-      v-if="todos.length === 0"
-      :disabled="text.length === 0"
-  >Create todo list</button>
-  <button @click="reset" v-if="todos.length > 0">Reset</button>
-  <label v-if="todos.length === 0">
+  <div class="buttons-section">
+    <button
+        class="pure-button pure-button-primary"
+        @click="createTodoList"
+        v-if="todos.length === 0"
+        :disabled="text.length === 0">
+      Create todo list
+    </button>
+    <button
+        class="pure-button pure-button-primary"
+        @click="reset"
+        v-if="todos.length > 0">
+      Reset
+    </button>
+  </div>
+
+  <form class="pure-form">
+    <label v-if="todos.length === 0">
     <textarea
         v-model="text"
+        class="pure-input textarea-class"
     ></textarea>
-  </label>
-  <br/>
+    </label>
+  </form>
+
   <div v-for="todo in todos"
        :key="todo.title"
        @click="todo.isDone = !todo.isDone"
-       class="todo"
+       class="todoList"
   >
-    <div v-if="todo.isDone" class="todoDone">[X] {{ todo.title }}</div>
-    <div v-if="!todo.isDone">[] {{ todo.title }}</div>
+    <div v-if="!todo.isDone" class="element element-todo">{{ todo.title }}</div>
+    <div v-if="todo.isDone" class="element element-done">{{ todo.title }}</div>
   </div>
+
 </template>
 
 <script>
@@ -34,7 +47,7 @@ export default {
   methods: {
     createTodoList() {
       this.text.split(/\r?\n/)
-               .map(s => this.todos.push({isDone: false, title: s}))
+          .map(s => this.todos.push({isDone: false, title: s}))
       localStorage.setItem('todos', JSON.stringify(this.todos))
     },
     reset() {
@@ -55,11 +68,32 @@ export default {
 </script>
 
 <style scoped>
-.todo {
+.todoList {
   cursor: pointer
 }
 
-.todoDone {
-  text-decoration: line-through
+.element {
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.element-done {
+  text-decoration: line-through;
+  background-color: #7bcf74;
+}
+
+.element-todo {
+}
+
+.buttons-section {
+  padding-bottom: 20px;
+  padding-top: 20px;
+  background-color: #7bcf74;
+}
+
+.textarea-class {
+  margin-top: 20px;
+  width: 80%;
+  height: 540px;
 }
 </style>
