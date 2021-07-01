@@ -47,6 +47,7 @@ export default {
   methods: {
     createTodoList() {
       this.text.split(/\r?\n/)
+          .filter(s => s.length > 0)
           .map(s => this.todos.push({isDone: false, title: s}))
       localStorage.setItem('todos', JSON.stringify(this.todos))
     },
