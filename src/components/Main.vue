@@ -26,7 +26,7 @@
 
   <div v-for="todo in todos"
        :key="todo.title"
-       @click="todo.isDone = !todo.isDone"
+       @click="changeTodoElementState(todo)"
        class="todoList"
   >
     <div v-if="!todo.isDone" class="element element-todo">{{ todo.title }}</div>
@@ -55,6 +55,10 @@ export default {
       this.text = ''
       localStorage.setItem('todos', '')
       this.todos = []
+    },
+    changeTodoElementState(todo) {
+      todo.isDone = !todo.isDone
+      localStorage.setItem('todos', JSON.stringify(this.todos))
     }
   },
   mounted() {
