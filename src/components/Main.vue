@@ -2,8 +2,14 @@
   <div class="buttons-section">
     <button
         class="pure-button pure-button-primary"
+        @click="addNewTodoList"
+        v-if="mode === modes.LIST_ALL_TODO_LISTS">
+      Add new todo list
+    </button>
+    <button
+        class="pure-button pure-button-primary"
         @click="createTodoList"
-        v-if="todos.length === 0"
+        v-if="mode === modes.ADD_NEW"
         :disabled="text.length === 0">
       Create todo list
     </button>
@@ -15,8 +21,17 @@
     </button>
   </div>
 
+  <!-- all lists -->
+  <div v-if="mode === modes.LIST_ALL_TODO_LISTS">
+    <div v-for="todoList in todos" :key="todoList.id">
+      <p>{{ todoList.id }}</p>
+      <p>{{ todoList.elements }}</p>
+    </div>
+  </div>
+
+  <!-- new list editor -->
   <form class="pure-form">
-    <label v-if="todos.length === 0">
+    <label v-if="mode === modes.ADD_NEW">
     <textarea
         v-model="text"
         class="pure-input textarea-class"
@@ -24,7 +39,8 @@
     </label>
   </form>
 
-  <div v-if="todos[0]">
+  <!-- single to do list -->
+  <div v-if="mode === modes.TODO_LIST_DETAILS">
     <div v-for="todo in todos[0].elements"
          :key="todo.title"
          @click="changeTodoElementState(todo)"
@@ -38,6 +54,8 @@
 </template>
 
 <script>
+import Modes from "./modes";
+
 function generateId() {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -54,10 +72,16 @@ export default {
   data: function () {
     return {
       text: '',
-      todos: []
+      todos: [],
+      selectedTodolistId: '',
+      modes: Modes,
+      mode: ''
     }
   },
   methods: {
+    addNewTodoList() {
+      this.mode = this.modes.ADD_NEW
+    },
     createTodoList() {
       const id = generateId()
       const newTodos = {}
@@ -69,6 +93,12 @@ export default {
 
       this.todos.push(newTodos)
       localStorage.setItem('todos', JSON.stringify(this.todos))
+
+      this.mode = this.modes.LIST_ALL_TODO_LISTS
+      this.text = ''
+    },
+    findTodoLisById(id) {
+      return this.todos.find(value => value.id === id)
     },
     reset() {
       this.text = ''
@@ -82,6 +112,8 @@ export default {
   },
   mounted() {
     const storedText = localStorage.getItem('todos')
+    this.mode = this.modes.LIST_ALL_TODO_LISTS
+    console.log(this.modes, this.mode)
     if (storedText) {
       this.text = storedText
       this.todos = JSON.parse(storedText)
