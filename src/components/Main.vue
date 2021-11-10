@@ -24,18 +24,31 @@
     </label>
   </form>
 
-  <div v-for="todo in todos"
-       :key="todo.title"
-       @click="changeTodoElementState(todo)"
-       class="todoList"
-  >
-    <div v-if="!todo.isDone" class="element element-todo">{{ todo.title }}</div>
-    <div v-if="todo.isDone" class="element element-done">{{ todo.title }}</div>
+  <div v-if="todos[0]">
+    <div v-for="todo in todos[0].elements"
+         :key="todo.title"
+         @click="changeTodoElementState(todo)"
+         class="todoList"
+    >
+      <div v-if="!todo.isDone" class="element element-todo">{{ todo.title }}</div>
+      <div v-if="todo.isDone" class="element element-done">{{ todo.title }}</div>
+    </div>
   </div>
 
 </template>
 
 <script>
+function generateId() {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < 20; i++) {
+    result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+  }
+  return result;
+}
+
 export default {
   name: 'HelloWorld',
   data: function () {
@@ -46,9 +59,15 @@ export default {
   },
   methods: {
     createTodoList() {
+      const id = generateId()
+      const newTodos = {}
+      newTodos.id = id
+      newTodos.elements = []
       this.text.split(/\r?\n/)
           .filter(s => s.length > 0)
-          .map(s => this.todos.push({isDone: false, title: s}))
+          .map(s => newTodos.elements.push({isDone: false, title: s}))
+
+      this.todos.push(newTodos)
       localStorage.setItem('todos', JSON.stringify(this.todos))
     },
     reset() {
@@ -62,7 +81,7 @@ export default {
     }
   },
   mounted() {
-    const storedText = localStorage.getItem('todos');
+    const storedText = localStorage.getItem('todos')
     if (storedText) {
       this.text = storedText
       this.todos = JSON.parse(storedText)
