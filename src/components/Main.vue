@@ -1,31 +1,36 @@
 <template>
   <div class="buttons-section">
     <button
-        class="pure-button pure-button-primary"
+        class="button-success pure-button"
         @click="addNewTodoList"
         v-if="mode === modes.LIST_ALL_TODO_LISTS">
       Add new todo list
     </button>
     <button
-        class="pure-button pure-button-primary"
+        class="button-success pure-button"
         @click="createTodoList"
         v-if="mode === modes.ADD_NEW"
         :disabled="text.length === 0">
       Create todo list
     </button>
     <button
-        class="pure-button pure-button-primary"
+        class="button-error pure-button"
         @click="cancel"
-        v-if="mode === modes.ADD_NEW"
-        :disabled="text.length === 0">
-      Cancel
+        v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS">
+      {{ mode === modes.TODO_LIST_DETAILS ? 'Back' : 'Cancel' }}
     </button>
-<!--    <button-->
-<!--        class="pure-button pure-button-primary"-->
-<!--        @click="reset"-->
-<!--        v-if="todos.length > 0">-->
-<!--      Reset-->
-<!--    </button>-->
+  </div>
+
+  <!-- new list editor -->
+  <div v-if="mode === modes.ADD_NEW">
+    <form class="pure-form">
+      <label>
+      <textarea
+          v-model="text"
+          class="pure-input textarea-class"
+      ></textarea>
+      </label>
+    </form>
   </div>
 
   <!-- all lists -->
@@ -33,24 +38,15 @@
     <div
         v-for="(todoList, index) in todos"
         :key="todoList.id"
-        class="all-list">
+        class="all-list"
+        @click="showList(todoList)">
       <div class="element-all-list" :class="{'element-all-list-even' : index % 2 === 1}">{{ todoList.id }}</div>
     </div>
   </div>
 
-  <!-- new list editor -->
-  <form class="pure-form">
-    <label v-if="mode === modes.ADD_NEW">
-    <textarea
-        v-model="text"
-        class="pure-input textarea-class"
-    ></textarea>
-    </label>
-  </form>
-
   <!-- single to do list -->
   <div v-if="mode === modes.TODO_LIST_DETAILS">
-    <div v-for="todo in todos[0].elements"
+    <div v-for="todo in selectedTodoList.elements"
          :key="todo.title"
          @click="changeTodoElementState(todo)"
          class="todoList"
@@ -68,7 +64,7 @@
 
 <script>
 import Modes from "./modes";
-import { version } from '../../package.json'
+import {version} from '../../package.json'
 
 function generateId() {
   let result = '';
@@ -87,7 +83,7 @@ export default {
     return {
       text: '',
       todos: [],
-      selectedTodolistId: '',
+      selectedTodoList: {},
       modes: Modes,
       mode: '',
       version: version
@@ -116,13 +112,9 @@ export default {
       this.text = ''
       this.mode = this.modes.LIST_ALL_TODO_LISTS
     },
-    findTodoLisById(id) {
-      return this.todos.find(value => value.id === id)
-    },
-    reset() {
-      this.text = ''
-      localStorage.setItem('todos', '')
-      this.todos = []
+    showList(todoList) {
+      this.selectedTodoList = todoList
+      this.mode = this.modes.TODO_LIST_DETAILS
     },
     changeTodoElementState(todo) {
       todo.isDone = !todo.isDone
@@ -176,6 +168,36 @@ export default {
   padding-bottom: 20px;
   padding-top: 20px;
   background-color: #2e7d32;
+}
+
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-right: 20px;
+}
+
+.button-success {
+  background: rgb(28, 184, 65);
+  /* this is a green */
+}
+
+.button-error {
+  background: rgb(202, 60, 60);
+  /* this is a maroon */
+}
+
+.button-warning {
+  background: rgb(223, 117, 20);
+  /* this is an orange */
+}
+
+.button-secondary {
+  background: rgb(66, 184, 221);
+  /* this is a light blue */
 }
 
 .textarea-class {
