@@ -16,16 +16,21 @@
     <button
         class="pure-button pure-button-primary"
         @click="cancel"
-        v-if="mode === modes.ADD_NEW"
-        :disabled="text.length === 0">
-      Cancel
+        v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS">
+      {{ mode === modes.TODO_LIST_DETAILS ? 'Back' : 'Cancel' }}
     </button>
-<!--    <button-->
-<!--        class="pure-button pure-button-primary"-->
-<!--        @click="reset"-->
-<!--        v-if="todos.length > 0">-->
-<!--      Reset-->
-<!--    </button>-->
+  </div>
+
+  <!-- new list editor -->
+  <div v-if="mode === modes.ADD_NEW">
+    <form class="pure-form">
+      <label>
+      <textarea
+          v-model="text"
+          class="pure-input textarea-class"
+      ></textarea>
+      </label>
+    </form>
   </div>
 
   <!-- all lists -->
@@ -33,24 +38,15 @@
     <div
         v-for="(todoList, index) in todos"
         :key="todoList.id"
-        class="all-list">
+        class="all-list"
+        @click="showList(todoList)">
       <div class="element-all-list" :class="{'element-all-list-even' : index % 2 === 1}">{{ todoList.id }}</div>
     </div>
   </div>
 
-  <!-- new list editor -->
-  <form class="pure-form">
-    <label v-if="mode === modes.ADD_NEW">
-    <textarea
-        v-model="text"
-        class="pure-input textarea-class"
-    ></textarea>
-    </label>
-  </form>
-
   <!-- single to do list -->
   <div v-if="mode === modes.TODO_LIST_DETAILS">
-    <div v-for="todo in todos[0].elements"
+    <div v-for="todo in selectedTodoList.elements"
          :key="todo.title"
          @click="changeTodoElementState(todo)"
          class="todoList"
@@ -68,7 +64,7 @@
 
 <script>
 import Modes from "./modes";
-import { version } from '../../package.json'
+import {version} from '../../package.json'
 
 function generateId() {
   let result = '';
@@ -87,7 +83,7 @@ export default {
     return {
       text: '',
       todos: [],
-      selectedTodolistId: '',
+      selectedTodoList: {},
       modes: Modes,
       mode: '',
       version: version
@@ -116,13 +112,9 @@ export default {
       this.text = ''
       this.mode = this.modes.LIST_ALL_TODO_LISTS
     },
-    findTodoLisById(id) {
-      return this.todos.find(value => value.id === id)
-    },
-    reset() {
-      this.text = ''
-      localStorage.setItem('todos', '')
-      this.todos = []
+    showList(todoList) {
+      this.selectedTodoList = todoList
+      this.mode = this.modes.TODO_LIST_DETAILS
     },
     changeTodoElementState(todo) {
       todo.isDone = !todo.isDone
