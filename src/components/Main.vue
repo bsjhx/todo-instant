@@ -14,15 +14,34 @@
       Create todo list
     </button>
     <button
+        class="button-success pure-button"
+        @click="editList()"
+        v-if="mode === modes.TODO_LIST_DETAILS">
+      Edit list
+    </button>
+    <button
         class="button-error pure-button"
-        @click="cancel"
-        v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS">
+        @click="removeList(selectedTodoList.id)"
+        v-if="mode === modes.TODO_LIST_DETAILS">
+      Remove list
+    </button>
+    <button
+        class="button-success pure-button"
+        @click="updateList()"
+        v-if="mode === modes.EDIT_LIST"
+        :disabled="todoListElementsText.length === 0">
+      Save changes
+    </button>
+    <button
+        class="button-warning pure-button"
+        @click="cancel(selectedTodoList.id)"
+        v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS || mode === modes.EDIT_LIST">
       {{ mode === modes.TODO_LIST_DETAILS ? 'Back' : 'Cancel' }}
     </button>
   </div>
 
-  <!-- new list editor -->
-  <div v-if="mode === modes.ADD_NEW">
+  <!-- new list / edit list -->
+  <div v-if="mode === modes.ADD_NEW || mode === modes.EDIT_LIST">
     <form class="pure-form">
       <div class="pure-control-group form-control-group-general">
         <label for="todo-list-name" class="form-label-general">Name</label>
@@ -121,13 +140,43 @@ export default {
       this.todos.push(newTodosList)
       localStorage.setItem('todos', JSON.stringify(this.todos))
 
-      this.mode = this.modes.LIST_ALL_TODO_LISTS
+      this.selectedTodoList = newTodosList
+      this.mode = this.modes.TODO_LIST_DETAILS
       this.todoListElementsText = ''
       this.todoListName = ''
     },
-    cancel() {
+    cancel(id) {
       this.todoListElementsText = ''
+      this.todoListName = ''
+      if (id && this.mode === this.modes.EDIT_LIST) {
+        this.mode = this.modes.TODO_LIST_DETAILS
+      } else {
+        this.mode = this.modes.LIST_ALL_TODO_LISTS
+      }
+    },
+    removeList(id) {
+      this.todos = this.todos.filter(el => el.id !== id)
+      localStorage.setItem('todos', JSON.stringify(this.todos))
+      this.selectedTodoList = {}
       this.mode = this.modes.LIST_ALL_TODO_LISTS
+    },
+    editList() {
+      this.mode = this.modes.EDIT_LIST
+      this.todoListElementsText = this.selectedTodoList.elements.map(el => el.title).join('\n')
+      this.todoListName = this.selectedTodoList.name
+    },
+    updateList() {
+      this.selectedTodoList.name = this.todoListName ? this.todoListName : this.selectedTodoList.id
+      this.selectedTodoList.elements = []
+      this.todoListElementsText.split(/\r?\n/)
+          .filter(s => s.length > 0)
+          .map(s => this.selectedTodoList.elements.push({isDone: false, title: s}))
+
+      localStorage.setItem('todos', JSON.stringify(this.todos))
+
+      this.mode = this.modes.TODO_LIST_DETAILS
+      this.todoListElementsText = ''
+      this.todoListName = ''
     },
     showList(todoList) {
       this.selectedTodoList = todoList
@@ -197,7 +246,8 @@ export default {
 }
 
 .button-success,
-.button-error {
+.button-error,
+.button-warning {
   color: white;
   border-radius: 4px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -210,6 +260,10 @@ export default {
 
 .button-error {
   background: rgb(202, 60, 60);
+}
+
+.button-warning {
+  background: rgb(223, 117, 20);
 }
 
 .form-control-group-general {
