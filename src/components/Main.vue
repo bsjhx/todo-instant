@@ -14,10 +14,16 @@
       Create todo list
     </button>
     <button
-        class="button-error pure-button"
+        class="button-warning pure-button"
         @click="cancel"
         v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS">
       {{ mode === modes.TODO_LIST_DETAILS ? 'Back' : 'Cancel' }}
+    </button>
+    <button
+        class="button-error pure-button"
+        @click="remove(selectedTodoList.id)"
+        v-if="mode === modes.TODO_LIST_DETAILS">
+      Remove list
     </button>
   </div>
 
@@ -130,6 +136,12 @@ export default {
       this.todoListElementsText = ''
       this.mode = this.modes.LIST_ALL_TODO_LISTS
     },
+    remove(id) {
+      this.todos = this.todos.filter(el => el.id !== id)
+      localStorage.setItem('todos', JSON.stringify(this.todos))
+      this.selectedTodoList = {}
+      this.mode = this.modes.LIST_ALL_TODO_LISTS
+    },
     showList(todoList) {
       this.selectedTodoList = todoList
       this.mode = this.modes.TODO_LIST_DETAILS
@@ -198,7 +210,8 @@ export default {
 }
 
 .button-success,
-.button-error {
+.button-error,
+.button-warning {
   color: white;
   border-radius: 4px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -211,6 +224,10 @@ export default {
 
 .button-error {
   background: rgb(202, 60, 60);
+}
+
+.button-warning {
+  background: rgb(223, 117, 20);
 }
 
 .form-control-group-general {
