@@ -15,20 +15,32 @@
     </button>
     <button
         class="button-warning pure-button"
-        @click="cancel"
-        v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS">
+        @click="cancel(selectedTodoList.id)"
+        v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS || mode === modes.EDIT_LIST">
       {{ mode === modes.TODO_LIST_DETAILS ? 'Back' : 'Cancel' }}
     </button>
     <button
         class="button-error pure-button"
-        @click="remove(selectedTodoList.id)"
+        @click="removeList(selectedTodoList.id)"
         v-if="mode === modes.TODO_LIST_DETAILS">
       Remove list
     </button>
+    <button
+        class="button-success pure-button"
+        @click="editList()"
+        v-if="mode === modes.TODO_LIST_DETAILS">
+      Edit list
+    </button>
+    <button
+        class="button-success pure-button"
+        @click="updateList()"
+        v-if="mode === modes.EDIT_LIST">
+      Save changes
+    </button>
   </div>
 
-  <!-- new list editor -->
-  <div v-if="mode === modes.ADD_NEW">
+  <!-- new list / edit list -->
+  <div v-if="mode === modes.ADD_NEW || mode === modes.EDIT_LIST">
     <form class="pure-form">
       <div class="pure-control-group form-control-group-general">
         <label for="todo-list-name" class="form-label-general">Name</label>
@@ -132,15 +144,38 @@ export default {
       this.todoListElementsText = ''
       this.todoListName = ''
     },
-    cancel() {
+    cancel(id) {
       this.todoListElementsText = ''
-      this.mode = this.modes.LIST_ALL_TODO_LISTS
+      this.todoListName = ''
+      if (id && this.mode === this.modes.EDIT_LIST) {
+        this.mode = this.modes.TODO_LIST_DETAILS
+      } else {
+        this.mode = this.modes.LIST_ALL_TODO_LISTS
+      }
     },
-    remove(id) {
+    removeList(id) {
       this.todos = this.todos.filter(el => el.id !== id)
       localStorage.setItem('todos', JSON.stringify(this.todos))
       this.selectedTodoList = {}
       this.mode = this.modes.LIST_ALL_TODO_LISTS
+    },
+    editList() {
+      this.mode = this.modes.EDIT_LIST
+      this.todoListElementsText = this.selectedTodoList.elements.map(el => el.title).join('\n')
+      this.todoListName = this.selectedTodoList.name
+    },
+    updateList() {
+      this.selectedTodoList.name = this.todoListName ? this.todoListName : this.selectedTodoList.id
+      this.selectedTodoList.elements = []
+      this.todoListElementsText.split(/\r?\n/)
+          .filter(s => s.length > 0)
+          .map(s => this.selectedTodoList.elements.push({isDone: false, title: s}))
+
+      localStorage.setItem('todos', JSON.stringify(this.todos))
+
+      this.mode = this.modes.TODO_LIST_DETAILS
+      this.todoListElementsText = ''
+      this.todoListName = ''
     },
     showList(todoList) {
       this.selectedTodoList = todoList
