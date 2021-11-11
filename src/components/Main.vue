@@ -14,10 +14,10 @@
       Create todo list
     </button>
     <button
-        class="button-warning pure-button"
-        @click="cancel(selectedTodoList.id)"
-        v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS || mode === modes.EDIT_LIST">
-      {{ mode === modes.TODO_LIST_DETAILS ? 'Back' : 'Cancel' }}
+        class="button-success pure-button"
+        @click="editList()"
+        v-if="mode === modes.TODO_LIST_DETAILS">
+      Edit list
     </button>
     <button
         class="button-error pure-button"
@@ -27,15 +27,16 @@
     </button>
     <button
         class="button-success pure-button"
-        @click="editList()"
-        v-if="mode === modes.TODO_LIST_DETAILS">
-      Edit list
+        @click="updateList()"
+        v-if="mode === modes.EDIT_LIST"
+        :disabled="todoListElementsText.length === 0">
+      Save changes
     </button>
     <button
-        class="button-success pure-button"
-        @click="updateList()"
-        v-if="mode === modes.EDIT_LIST">
-      Save changes
+        class="button-warning pure-button"
+        @click="cancel(selectedTodoList.id)"
+        v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS || mode === modes.EDIT_LIST">
+      {{ mode === modes.TODO_LIST_DETAILS ? 'Back' : 'Cancel' }}
     </button>
   </div>
 
