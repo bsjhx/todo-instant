@@ -51,10 +51,15 @@
     </div>
   </div>
 
+  <div class="version">
+    {{ version }}
+  </div>
+
 </template>
 
 <script>
 import Modes from "./modes";
+import { version } from '../../package.json'
 
 function generateId() {
   let result = '';
@@ -75,7 +80,8 @@ export default {
       todos: [],
       selectedTodolistId: '',
       modes: Modes,
-      mode: ''
+      mode: '',
+      version: version
     }
   },
   methods: {
@@ -113,7 +119,7 @@ export default {
   mounted() {
     const storedText = localStorage.getItem('todos')
     this.mode = this.modes.LIST_ALL_TODO_LISTS
-    console.log(this.modes, this.mode)
+    console.log(version)
     if (storedText) {
       this.text = storedText
       this.todos = JSON.parse(storedText)
@@ -151,5 +157,13 @@ export default {
   margin-top: 20px;
   width: 80%;
   height: 540px;
+}
+
+.version {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-right: 20px;
+  margin-bottom: 5px;
 }
 </style>
