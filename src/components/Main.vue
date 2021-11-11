@@ -24,20 +24,18 @@
   <!-- new list editor -->
   <div v-if="mode === modes.ADD_NEW">
     <form class="pure-form">
-      <fieldset>
-        <div class="pure-control-group form-control-group-general">
-          <label for="todo-list-name" class="form-label-general">Name</label>
-          <input type="text" id="todo-list-name" placeholder="Name" class="pure-input form-text-input-general" />
-        </div>
-        <div class="pure-control-group form-control-group-general">
-          <label for="todo-list-elements" class="form-label-general">Tasks</label>
-          <textarea
-              id="todo-list-elements"
-              v-model="text"
-              class="pure-input form-text-input-general form-text-area"
-          ></textarea>
-        </div>
-      </fieldset>
+      <div class="pure-control-group form-control-group-general">
+        <label for="todo-list-name" class="form-label-general">Name</label>
+        <input type="text" id="todo-list-name" placeholder="Name" class="pure-input form-text-input-general"/>
+      </div>
+      <div class="pure-control-group form-control-group-general">
+        <label for="todo-list-elements" class="form-label-general">Tasks</label>
+        <textarea
+            id="todo-list-elements"
+            v-model="text"
+            class="pure-input form-text-input-general form-text-area"
+        ></textarea>
+      </div>
     </form>
   </div>
 
