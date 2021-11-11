@@ -24,12 +24,20 @@
   <!-- new list editor -->
   <div v-if="mode === modes.ADD_NEW">
     <form class="pure-form">
-      <label>
-      <textarea
-          v-model="text"
-          class="pure-input textarea-class"
-      ></textarea>
-      </label>
+      <fieldset>
+        <div class="pure-control-group form-control-group-general">
+          <label for="todo-list-name" class="form-label-general">Name</label>
+          <input type="text" id="todo-list-name" placeholder="Name" class="pure-input form-text-input-general" />
+        </div>
+        <div class="pure-control-group form-control-group-general">
+          <label for="todo-list-elements" class="form-label-general">Tasks</label>
+          <textarea
+              id="todo-list-elements"
+              v-model="text"
+              class="pure-input form-text-input-general form-text-area"
+          ></textarea>
+        </div>
+      </fieldset>
     </form>
   </div>
 
@@ -171,9 +179,7 @@ export default {
 }
 
 .button-success,
-.button-error,
-.button-warning,
-.button-secondary {
+.button-error {
   color: white;
   border-radius: 4px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -182,28 +188,27 @@ export default {
 
 .button-success {
   background: rgb(28, 184, 65);
-  /* this is a green */
 }
 
 .button-error {
   background: rgb(202, 60, 60);
-  /* this is a maroon */
 }
 
-.button-warning {
-  background: rgb(223, 117, 20);
-  /* this is an orange */
-}
-
-.button-secondary {
-  background: rgb(66, 184, 221);
-  /* this is a light blue */
-}
-
-.textarea-class {
+.form-control-group-general {
   margin-top: 20px;
+}
+
+.form-text-input-general {
   width: 80%;
-  height: 540px;
+  margin: auto;
+}
+
+.form-label-general {
+  margin-right: 10px;
+}
+
+.form-text-area {
+  height: 500px;
 }
 
 .version {
