@@ -20,8 +20,21 @@ vue-cli-service build
 vue-cli-service lint
 ```
 
-### Deploy to production
+## Deploy to production
+1. Upgrade version
 ```
-1. vue-cli-service build
-2. firebase deploy
+npm version patch | minor
 ```
+2. Build app
+```
+vue-cli-service build
+```
+3. Deploy
+```
+firebase deploy
+```
+
+#### Versioning policy
+- patch - bugs/small changes
+- minor - added functionality
+- major - final version released/new milestone
