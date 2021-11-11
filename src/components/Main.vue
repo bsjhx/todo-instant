@@ -10,7 +10,7 @@
         class="button-success pure-button"
         @click="createTodoList"
         v-if="mode === modes.ADD_NEW"
-        :disabled="text.length === 0">
+        :disabled="todoListElementsText.length === 0">
       Create todo list
     </button>
     <button
@@ -24,12 +24,23 @@
   <!-- new list editor -->
   <div v-if="mode === modes.ADD_NEW">
     <form class="pure-form">
-      <label>
-      <textarea
-          v-model="text"
-          class="pure-input textarea-class"
-      ></textarea>
-      </label>
+      <div class="pure-control-group form-control-group-general">
+        <label for="todo-list-name" class="form-label-general">Name</label>
+        <input
+            type="text"
+            id="todo-list-name"
+            placeholder="Name"
+            class="pure-input form-text-input-general"
+            v-model="todoListName"/>
+      </div>
+      <div class="pure-control-group form-control-group-general">
+        <label for="todo-list-elements" class="form-label-general">Tasks</label>
+        <textarea
+            id="todo-list-elements"
+            v-model="todoListElementsText"
+            class="pure-input form-text-input-general form-text-area"
+        ></textarea>
+      </div>
     </form>
   </div>
 
@@ -40,12 +51,15 @@
         :key="todoList.id"
         class="all-list"
         @click="showList(todoList)">
-      <div class="element-all-list" :class="{'element-all-list-even' : index % 2 === 1}">{{ todoList.id }}</div>
+      <div class="element-all-list" :class="{'element-all-list-even' : index % 2 === 1}">
+        {{ todoList.name ? todoList.name : todoList.id }}
+      </div>
     </div>
   </div>
 
   <!-- single to do list -->
   <div v-if="mode === modes.TODO_LIST_DETAILS">
+    <div class="todo-list-name">{{ selectedTodoList.name }}</div>
     <div v-for="todo in selectedTodoList.elements"
          :key="todo.title"
          @click="changeTodoElementState(todo)"
@@ -81,7 +95,8 @@ export default {
   name: 'HelloWorld',
   data: function () {
     return {
-      text: '',
+      todoListElementsText: '',
+      todoListName: '',
       todos: [],
       selectedTodoList: {},
       modes: Modes,
@@ -95,21 +110,23 @@ export default {
     },
     createTodoList() {
       const id = generateId()
-      const newTodos = {}
-      newTodos.id = id
-      newTodos.elements = []
-      this.text.split(/\r?\n/)
+      const newTodosList = {}
+      newTodosList.id = id
+      newTodosList.name = this.todoListName ? this.todoListName : id
+      newTodosList.elements = []
+      this.todoListElementsText.split(/\r?\n/)
           .filter(s => s.length > 0)
-          .map(s => newTodos.elements.push({isDone: false, title: s}))
+          .map(s => newTodosList.elements.push({isDone: false, title: s}))
 
-      this.todos.push(newTodos)
+      this.todos.push(newTodosList)
       localStorage.setItem('todos', JSON.stringify(this.todos))
 
       this.mode = this.modes.LIST_ALL_TODO_LISTS
-      this.text = ''
+      this.todoListElementsText = ''
+      this.todoListName = ''
     },
     cancel() {
-      this.text = ''
+      this.todoListElementsText = ''
       this.mode = this.modes.LIST_ALL_TODO_LISTS
     },
     showList(todoList) {
@@ -158,10 +175,19 @@ export default {
 
 .element-done {
   text-decoration: line-through;
-  background-color: #60ad5e;
+  background-color: #cfe6cf;
 }
 
 .element-todo {
+}
+
+.todo-list-name {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-transform: uppercase;
+  font-size: 30px;
+  font-weight: bold;
+  background-color: #60ad5e;
 }
 
 .buttons-section {
@@ -171,9 +197,7 @@ export default {
 }
 
 .button-success,
-.button-error,
-.button-warning,
-.button-secondary {
+.button-error {
   color: white;
   border-radius: 4px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -182,28 +206,27 @@ export default {
 
 .button-success {
   background: rgb(28, 184, 65);
-  /* this is a green */
 }
 
 .button-error {
   background: rgb(202, 60, 60);
-  /* this is a maroon */
 }
 
-.button-warning {
-  background: rgb(223, 117, 20);
-  /* this is an orange */
-}
-
-.button-secondary {
-  background: rgb(66, 184, 221);
-  /* this is a light blue */
-}
-
-.textarea-class {
+.form-control-group-general {
   margin-top: 20px;
+}
+
+.form-text-input-general {
   width: 80%;
-  height: 540px;
+  margin: auto;
+}
+
+.form-label-general {
+  margin-right: 10px;
+}
+
+.form-text-area {
+  height: 500px;
 }
 
 .version {
