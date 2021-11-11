@@ -15,17 +15,26 @@
     </button>
     <button
         class="pure-button pure-button-primary"
-        @click="reset"
-        v-if="todos.length > 0">
-      Reset
+        @click="cancel"
+        v-if="mode === modes.ADD_NEW"
+        :disabled="text.length === 0">
+      Cancel
     </button>
+<!--    <button-->
+<!--        class="pure-button pure-button-primary"-->
+<!--        @click="reset"-->
+<!--        v-if="todos.length > 0">-->
+<!--      Reset-->
+<!--    </button>-->
   </div>
 
   <!-- all lists -->
   <div v-if="mode === modes.LIST_ALL_TODO_LISTS">
-    <div v-for="todoList in todos" :key="todoList.id">
-      <p>{{ todoList.id }}</p>
-      <p>{{ todoList.elements }}</p>
+    <div
+        v-for="(todoList, index) in todos"
+        :key="todoList.id"
+        class="all-list">
+      <div class="element-all-list" :class="{'element-all-list-even' : index % 2 === 1}">{{ todoList.id }}</div>
     </div>
   </div>
 
@@ -103,6 +112,10 @@ export default {
       this.mode = this.modes.LIST_ALL_TODO_LISTS
       this.text = ''
     },
+    cancel() {
+      this.text = ''
+      this.mode = this.modes.LIST_ALL_TODO_LISTS
+    },
     findTodoLisById(id) {
       return this.todos.find(value => value.id === id)
     },
@@ -119,9 +132,7 @@ export default {
   mounted() {
     const storedText = localStorage.getItem('todos')
     this.mode = this.modes.LIST_ALL_TODO_LISTS
-    console.log(version)
     if (storedText) {
-      this.text = storedText
       this.todos = JSON.parse(storedText)
     }
   }
@@ -130,6 +141,20 @@ export default {
 </script>
 
 <style scoped>
+.all-list {
+  cursor: pointer;
+}
+
+.element-all-list {
+  padding-bottom: 40px;
+  padding-top: 40px;
+  background-color: #F5F5F6;
+}
+
+.element-all-list-even {
+  background-color: #cfe6cf;
+}
+
 .todoList {
   cursor: pointer
 }
@@ -141,7 +166,7 @@ export default {
 
 .element-done {
   text-decoration: line-through;
-  background-color: #7bcf74;
+  background-color: #60ad5e;
 }
 
 .element-todo {
@@ -150,7 +175,7 @@ export default {
 .buttons-section {
   padding-bottom: 20px;
   padding-top: 20px;
-  background-color: #7bcf74;
+  background-color: #2e7d32;
 }
 
 .textarea-class {
