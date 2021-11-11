@@ -121,7 +121,8 @@ export default {
       this.todos.push(newTodosList)
       localStorage.setItem('todos', JSON.stringify(this.todos))
 
-      this.mode = this.modes.LIST_ALL_TODO_LISTS
+      this.selectedTodoList = newTodosList
+      this.mode = this.modes.TODO_LIST_DETAILS
       this.todoListElementsText = ''
       this.todoListName = ''
     },
