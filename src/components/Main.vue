@@ -1,20 +1,20 @@
 <template>
   <div class="buttons-section">
     <button
-        class="pure-button pure-button-primary"
+        class="button-success pure-button"
         @click="addNewTodoList"
         v-if="mode === modes.LIST_ALL_TODO_LISTS">
       Add new todo list
     </button>
     <button
-        class="pure-button pure-button-primary"
+        class="button-success pure-button"
         @click="createTodoList"
         v-if="mode === modes.ADD_NEW"
         :disabled="text.length === 0">
       Create todo list
     </button>
     <button
-        class="pure-button pure-button-primary"
+        class="button-error pure-button"
         @click="cancel"
         v-if="mode === modes.ADD_NEW || mode === modes.TODO_LIST_DETAILS">
       {{ mode === modes.TODO_LIST_DETAILS ? 'Back' : 'Cancel' }}
@@ -168,6 +168,36 @@ export default {
   padding-bottom: 20px;
   padding-top: 20px;
   background-color: #2e7d32;
+}
+
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-right: 20px;
+}
+
+.button-success {
+  background: rgb(28, 184, 65);
+  /* this is a green */
+}
+
+.button-error {
+  background: rgb(202, 60, 60);
+  /* this is a maroon */
+}
+
+.button-warning {
+  background: rgb(223, 117, 20);
+  /* this is an orange */
+}
+
+.button-secondary {
+  background: rgb(66, 184, 221);
+  /* this is a light blue */
 }
 
 .textarea-class {
