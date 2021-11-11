@@ -59,6 +59,7 @@
 
   <!-- single to do list -->
   <div v-if="mode === modes.TODO_LIST_DETAILS">
+    <div class="todo-list-name">{{ selectedTodoList.name }}</div>
     <div v-for="todo in selectedTodoList.elements"
          :key="todo.title"
          @click="changeTodoElementState(todo)"
@@ -174,10 +175,19 @@ export default {
 
 .element-done {
   text-decoration: line-through;
-  background-color: #60ad5e;
+  background-color: #cfe6cf;
 }
 
 .element-todo {
+}
+
+.todo-list-name {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-transform: uppercase;
+  font-size: 30px;
+  font-weight: bold;
+  background-color: #60ad5e;
 }
 
 .buttons-section {
